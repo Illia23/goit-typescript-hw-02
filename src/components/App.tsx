@@ -1,22 +1,32 @@
-import SearchForm from '../components/SearchBar/SearchBar.tsx'
-import ImageGallery from './ImageGallery/ImageGallery.tsx';
-import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn.tsx';
-import ImageModal from './ImageModal/ImageModal.tsx';
-import getPhoto from "../api.ts";
-import Loader from "./Loader/Loader.tsx";
-import ErrorMessage from "./ErrorMessage/ErrorMessage.tsx"; 
+import SearchForm from '../components/SearchBar/SearchBar';
+import ImageGallery from './ImageGallery/ImageGallery';
+import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
+import ImageModal from './ImageModal/ImageModal';
+import getPhoto from "../api";
+import Loader from "./Loader/Loader";
+import ErrorMessage from "./ErrorMessage/ErrorMessage"; 
 import { useState, useEffect } from "react";
 
-const App = () => {
-  const [images, setImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [url, setUrl] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+interface Photo {
+  id: string;
+  urls: {
+    small: string;
+    thumb: string;
+    regular: string;
+  };
+  alt_description: string;
+}
 
- useEffect(() => {
+const App = () => {
+  const [images, setImages] = useState<Photo[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [query, setQuery] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [url, setUrl] = useState<string>('');
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+  useEffect(() => {
     if (query.trim() === '') {
       return;
     }
@@ -39,7 +49,7 @@ const App = () => {
     fetchPhotos();
   }, [page, query]);
 
-  const handleSearch = (topic) => {
+  const handleSearch = (topic: string) => {
     setQuery(topic);
     setPage(1);
     setImages([]);
@@ -49,7 +59,7 @@ const App = () => {
     setPage((prevPage) => prevPage + 1); 
   };
 
-  const openModal = (url) => {
+  const openModal = (url: string) => {
     setUrl(url);
     setIsModalVisible(true);
   };

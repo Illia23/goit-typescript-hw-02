@@ -1,32 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import modalStyles from './ImageModal.module.css';
 
-const ImageModal = ({ closeModal, url }) => {
+interface ImageModalProps {
+  closeModal: () => void;
+  url: string;
+}
+
+const ImageModal: React.FC<ImageModalProps> = ({ closeModal, url }) => {
+  const [isOpen, setIsOpen] = useState(true);
+
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Escape') {
         closeModal();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [closeModal]);
 
-  const handleClickOutside = (e) => {
-    if (e.target === e.currentTarget) {
-      closeModal();
-    }
-  };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [closeModal]);
 
   return (
     <ReactModal
-      isOpen={true}
-      onRequestClose={closeModal}
+      isOpen={isOpen}
+      onRequestClose={() => {
+        closeModal();
+        setIsOpen(false);
+      }}
       contentLabel="Image Modal"
       className={modalStyles.container}
       overlayClassName={modalStyles.overlay}
-      onClick={handleClickOutside} 
+      ariaHideApp={false}
     >
       <img className={modalStyles.img} src={url} alt="modal_img" />
     </ReactModal>
